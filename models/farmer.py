@@ -7,3 +7,4 @@ class CropResponse(BaseModel):
     end_time: datetime.datetime
     latitude: float
     longitude: float
+    quantity_kg: float

@@ -6,13 +6,15 @@ import os
 from dotenv import load_dotenv
 from models.signup import (
     Farmer,
-    Transporter,
-    PackagingDept,
-    ProcessingUnit,
-    QualityLab,
+    WildCollector,
+    Processor,
+    Laboratory,
+    Manufacturer,
+    Packer,
+    Storage,
     LoginRequest
 )
-
+import uuid
 
 load_dotenv()
 MONGO_URI = os.getenv("MONGO_URI")
@@ -23,21 +25,29 @@ profiles_collection = db["profiles"]
 
 router = APIRouter(prefix="/profiles", tags=["Profiles"])
 
-ProfileUnion = Union[Farmer, Transporter, ProcessingUnit, QualityLab, PackagingDept]
-
+ProfileUnion = Union[Farmer, WildCollector, Processor, Laboratory,Manufacturer, Packer, Storage]
 
 @router.post("/create")
 def create_profile(profile: ProfileUnion):
     try:
-        existing = profiles_collection.find_one({
-            "role": profile.role,
-            "phone_number": profile.phone_number
-        })
+        if profile.role == "farmer":
+            existing = profiles_collection.find_one({
+                "role": profile.role,
+                "phone_number": profile.phone_number
+            })
+        else:
+            existing = profiles_collection.find_one({
+                "role": profile.role,
+                "company_email": profile.company_email
+            })
         if existing:
             raise HTTPException(
                 status_code=400,
                 detail=f"{profile.role.capitalize()} already exists"
             )
+        auth=str(uuid.uuid4())
+        profile_dict = profile.dict()
+        profile_dict["auth_token"] = auth
 
         result = profiles_collection.insert_one(profile.dict())
         return {
@@ -50,21 +60,28 @@ def create_profile(profile: ProfileUnion):
         raise he
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
-    
+
+# SCM LOGIN  
 @router.post("/login")
 async def login(data: LoginRequest):
-    phone = data.phone_number
+    email = data.company_email
     password = data.password
-    role = data.role
 
-    user_db = profiles_collection.find_one({"phone_number": phone, "role": role})
-    if not user_db:
-        raise HTTPException(status_code=401, detail="User not found")
+    if password is None or email is None:
+        raise HTTPException(status_code=400, detail="Email and password are required")
 
-    if user_db["password"] == password:
-        return {"message": "Login successful", "role": role}
+    if password == "scm@123" and email == "scm@example.com":
+        return {
+            "company_email": email,
+            "role": "scm",
+            "msg": "SCM login successful",
+            "auth_token": str(uuid.uuid4())
+        }
     else:
-        raise HTTPException(status_code=401, detail="Invalid PIN")
+        raise HTTPException(status_code=401, detail="Invalid credentials")
+    
+        
+    
 
     
 
