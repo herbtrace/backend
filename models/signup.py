@@ -30,6 +30,7 @@ class WildCollector(BaseModel):
     license_no: Optional[str]
     area_assigned: Optional[str]
     certifications: Optional[List[str]] = []
+    company_email: EmailStr
     registered_species: Optional[List[str]] = []
 
 class Processor(BaseModel):
@@ -81,6 +82,7 @@ class Storage(BaseModel):
     facility_name: str
     location: str
     cert_status: Optional[str]  
+    company_email: EmailStr
 
 #SCM LOGIN
 class LoginRequest(BaseModel):
