@@ -3,5 +3,5 @@ venv/
 /__pycache__/
 __pycache__/
 base/
-.DS_Store/
-/.DS_Store/
+.DS_Store
+/.DS_Store
