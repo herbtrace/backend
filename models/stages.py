@@ -52,7 +52,7 @@ class CollectionEvent(BaseModel):
 #  b. Transport Event
 class TransportEvent(BaseModel):
     transport_id: str
-    batch_ids: List[int]
+    batch_id: str
     provenance_fhir_url: HttpUrl
     transporter_id: str
     origin: LatLong
@@ -110,7 +110,7 @@ class IngredientsModel(BaseModel):
 class ManufacturingEvent(BaseModel):
     manufacturing_id: str
     product_name: str
-    batch_ids_used: List[int]
+    batch_ids_used: str
     manufacturer_id: str
     manufacture_date: datetime
     ingredients: List[IngredientsModel]
