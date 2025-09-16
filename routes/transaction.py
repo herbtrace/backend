@@ -11,21 +11,28 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-router = APIRouter(prefix = "/transactions", tags = ["Transactions"])
+router = APIRouter(tags = ["Transactions"])
 MONGO_URI = os.getenv("MONGO_URI")
 
 client = MongoClient(MONGO_URI, server_api=ServerApi('1'))
 db = client["supply_chain"]
 crops_collection = db["crops"]
 
-# def state(latitude,longitude):
-#     geolocator = Nominatim(user_agent="crop_app")
-#     location = geolocator.reverse((latitude, longitude), exactly_one=True)
-
-#     return location.raw['address']['state']
-
-# with open ("validation.json") as f:
-#         plant_data=json.load(f)
+@router.post("/start")
+def add_crop(response : FarmerDetails):
+    data={'batch_id': response.batch_id,
+          'crop_id': response.crop_id,
+          'start_time': response.start_time
+          }
+    try:
+        result = crops_collection.update_one(
+            {},
+            {"$push": {f"farmer.{response.farmer_id}": data}},
+            upsert=True
+        )
+        return {"message": "Crop added successfully"}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 @router.post("/get")
 def get_farmer_data(profile_id: str, role: str):
@@ -37,7 +44,7 @@ def get_farmer_data(profile_id: str, role: str):
         raise HTTPException(status_code=404, detail="Farmer not found")
     return doc
 
-@router.post("/validate")
+@router.post("/transactions")
 def validate(response : QrCodeData):
     data={'batch_id': response.event.batch_id,
           'crop_id': response.event.crop_id,
@@ -65,18 +72,3 @@ def validate(response : QrCodeData):
     # Blockchain interaction to be added here
     return {"message": "Transaction successful"}
 
-@router.post("/start")
-def add_crop(response : CollectionEvent):
-    data={'batch_id': response.batch_id,
-          'crop_id': response.crop_id,
-          'start_time': response.start_date,
-          }
-    try:
-        result = crops_collection.update_one(
-            {},
-            {"$push": {f"farmer.{response.actor_id}": data}},
-            upsert=True
-        )
-        return {"message": "Crop added successfully"}
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
