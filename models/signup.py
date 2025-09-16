@@ -12,7 +12,7 @@ class LatLong(BaseModel):
 
 class Farmer(BaseModel):
     role: Literal["farmer"]
-    farmer_id: Optional[str]
+    profile_id: Optional[str]
     name: str
     phone_number: str
     location: Optional[LatLong]
@@ -23,7 +23,7 @@ class Farmer(BaseModel):
 
 class WildCollector(BaseModel):
     role: Literal["wild_collector"]
-    wild_collector_id: str
+    profile_id: str
     name: str
     phone_number: str
     location: Optional[LatLong]
@@ -35,7 +35,7 @@ class WildCollector(BaseModel):
 
 class Processor(BaseModel):
     role: Literal["processor"]
-    processor_id: str
+    profile_id: str
     company_name: str
     authority_name: str
     address: str
@@ -48,7 +48,7 @@ class Processor(BaseModel):
 
 class Laboratory(BaseModel):
     role: Literal["laboratory"]
-    lab_id: str
+    profile_id: str
     company_name: str
     location: str
     accreditation_no: Optional[str]
@@ -59,7 +59,7 @@ class Laboratory(BaseModel):
 
 class Manufacturer(BaseModel):
     role: Literal["manufacturer"]
-    manufacturer_id: str
+    profile_id: str
     name: str
     address: str
     license_no: Optional[str]
@@ -69,7 +69,7 @@ class Manufacturer(BaseModel):
 
 class Packer(BaseModel):
     role: Literal["packer"]
-    packer_id: str
+    profile_id: str
     name: str
     lic_no: Optional[str]
     location: Optional[str]
@@ -78,7 +78,7 @@ class Packer(BaseModel):
 
 class Storage(BaseModel):
     role: Literal["storage"]
-    storage_id: str
+    profile_id: str
     facility_name: str
     location: str
     cert_status: Optional[str]  

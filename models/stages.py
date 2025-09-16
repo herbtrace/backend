@@ -17,12 +17,10 @@ class EnvironmentalConditions(BaseModel):
     weather_conditions: Optional[str]
     irrigation_method: Optional[str]
 
-
 class FarmingInputs(BaseModel):
     fertilizers: Optional[str]
     pesticides_used: Optional[str]
     organic_certified: bool = False
-
 
 class PermitCompliance(BaseModel):
     permit_id: str
@@ -35,10 +33,6 @@ class FarmerDetails(BaseModel):
     batch_id: str
     crop_id: str
     start_time : datetime
-
-class ProfileDetails(BaseModel):
-    profile_id: str
-    role: str
 
 # a. Collection Event
 class CollectionEvent(BaseModel):

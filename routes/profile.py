@@ -32,12 +32,12 @@ def create_profile(profile: ProfileUnion):
     try:
         if profile.role == "farmer":
             existing = profiles_collection.find_one({
-                "role": profile.role,
+                "role": profile.role.lower(),
                 "phone_number": profile.phone_number
             })
         else:
             existing = profiles_collection.find_one({
-                "role": profile.role,
+                "role": profile.role.lower(),
                 "company_email": profile.company_email
             })
         if existing:
@@ -92,6 +92,11 @@ def get_profiles():
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-
-    
-
+# for users to login from app
+@router.get("/user_login")
+def login(profile_id: str, role: str):
+    user = profiles_collection.find_one({"profile_id": profile_id, "role": role.lower()})
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    serialize_profile(user)
+    return {"message": "Login successful", "user": user}

@@ -71,4 +71,3 @@ def validate(response : QrCodeData):
 
     # Blockchain interaction to be added here
     return {"message": "Transaction successful"}
-
