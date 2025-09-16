@@ -27,22 +27,22 @@ def add_crop(response : FarmerDetails):
     try:
         result = crops_collection.update_one(
             {},
-            {"$push": {f"farmer.{response.farmer_id}": data}},
+            {"$push": {f"farmer.{response.profile_id}": data}},
             upsert=True
         )
         return {"message": "Crop added successfully"}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-@router.post("/get")
-def get_farmer_data(profile_id: str, role: str):
+@router.get("/get")
+def get_profile_data(profile_id: str, role: str):
     doc = crops_collection.find_one(
-    { f"{role}.{profile_id}": { "$exists": True } },
-    { f"{role}.{profile_id}": 1, "_id": 0 }
+    { f"{role.lower()}.{profile_id}": { "$exists": True } },
+    { f"{role.lower()}.{profile_id}": 1, "_id": 0 }
     )
     if not doc:
-        raise HTTPException(status_code=404, detail="Farmer not found")
-    return doc
+        raise HTTPException(status_code=404, detail="Profile not found")
+    return doc.get(role.lower() , {}).get(profile_id, [])
 
 @router.post("/transactions")
 def validate(response : QrCodeData):

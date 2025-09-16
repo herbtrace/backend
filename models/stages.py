@@ -31,10 +31,14 @@ class PermitCompliance(BaseModel):
     valid_until: Optional[datetime]
 
 class FarmerDetails(BaseModel):
-    farmer_id: str
+    profile_id: str
     batch_id: str
     crop_id: str
     start_time : datetime
+
+class ProfileDetails(BaseModel):
+    profile_id: str
+    role: str
 
 # a. Collection Event
 class CollectionEvent(BaseModel):
