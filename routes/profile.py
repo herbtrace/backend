@@ -79,9 +79,19 @@ async def login(data: LoginRequest):
         }
     else:
         raise HTTPException(status_code=401, detail="Invalid credentials")
-    
-        
-    
+
+def serialize_profile(profile):
+    profile["_id"] = str(profile["_id"])
+    return profile
+
+@router.get("/get")
+def get_profiles():
+    try:
+        profiles = list(profiles_collection.find())
+        return [serialize_profile(profile) for profile in profiles]
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
 
     
 
