@@ -131,7 +131,7 @@ class PackingEvent(BaseModel):
 class QrCodeData(BaseModel):
     from_id: str
     to_id: str  
-    crops: str
+    batch_id: str
     from_role: str
     to_role: str
     start_time: Optional[datetime]

@@ -94,9 +94,19 @@ def get_profiles():
 
 # for users to login from app
 @router.get("/user_login")
-def login(profile_id: str, role: str):
-    user = profiles_collection.find_one({"profile_id": profile_id, "role": role.lower()})
+def login(profile_id: str):
+    user = profiles_collection.find_one({"profile_id": profile_id})
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
     serialize_profile(user)
-    return {"message": "Login successful", "user": user}
+
+    role=user.pop("role", None)
+
+    return {"message": "Login successful", "role": role, "data": user}
+
+@router.get("/check_if_user_exists")
+def check_if_user_exists(profile_id: str):
+    user = profiles_collection.find_one({"profile_id": profile_id})
+    if not user:
+        return {"exists": False}
+    return {"exists": True}

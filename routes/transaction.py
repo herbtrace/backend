@@ -8,12 +8,13 @@ from pymongo.mongo_client import MongoClient
 from pymongo.server_api import ServerApi
 import os
 from dotenv import load_dotenv
+import requests
 
 load_dotenv()
 
 router = APIRouter(tags = ["Transactions"])
 MONGO_URI = os.getenv("MONGO_URI")
-
+# BC_URI = "http://localhost:4000"
 client = MongoClient(MONGO_URI, server_api=ServerApi('1'))
 db = client["supply_chain"]
 crops_collection = db["crops"]
@@ -46,6 +47,12 @@ def get_profile_data(profile_id: str, role: str):
 
 @router.post("/transactions")
 def validate(response : QrCodeData):
+
+    # try:
+    #     requests.post(f"{BC_URI}/event", json=response.event.dict())
+    # except Exception as e:
+    #     raise HTTPException(status_code=500, detail="Blockchain interaction failed")
+    
     data={'batch_id': response.event.batch_id,
           'crop_id': response.event.crop_id,
           'start_time': response.start_time}
@@ -66,8 +73,6 @@ def validate(response : QrCodeData):
         }
     }}
 )
-    for doc in crops_collection.find():
-        print(doc)
-
-    # Blockchain interaction to be added here
+    
     return {"message": "Transaction successful"}
+
