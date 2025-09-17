@@ -88,6 +88,8 @@ def serialize_profile(profile):
 def get_profiles():
     try:
         profiles = list(profiles_collection.find())
+        if not profiles:
+            return []
         return [serialize_profile(profile) for profile in profiles]
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
