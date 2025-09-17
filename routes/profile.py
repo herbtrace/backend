@@ -97,7 +97,7 @@ def get_profiles():
 def login(profile_id: str):
     user = profiles_collection.find_one({"profile_id": profile_id})
     if not user:
-        raise HTTPException(status_code=404, detail="User not found")
+        return {"message": "User not found", "data": []}
     serialize_profile(user)
 
     role=user.pop("role", None)
