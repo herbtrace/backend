@@ -37,8 +37,9 @@ def add_crop(response : FarmerDetails):
 
 @router.get("/get")
 def get_profile_data(profile_id: str, role: str):
+    escaped_profile_id = profile_id.replace('.', '\u002e').replace('$', '\u0024')
     doc = crops_collection.find_one(
-    { f"{role}": { "$exists": True }, f"{role}.{profile_id.replace('.', '\\u002e').replace('$', '\\u0024')}": { "$exists": True } })
+    { f"{role}": { "$exists": True }, f"{role}.{escaped_profile_id}": { "$exists": True } })
 
     print(role, profile_id, doc)
     if not doc:
