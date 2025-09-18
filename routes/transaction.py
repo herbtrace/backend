@@ -38,41 +38,54 @@ def add_crop(response : FarmerDetails):
 @router.get("/get")
 def get_profile_data(profile_id: str, role: str):
     doc = crops_collection.find_one(
-    { f"{role.lower()}.{profile_id}": { "$exists": True } },
-    { f"{role.lower()}.{profile_id}": 1, "_id": 0 }
-    )
+    { f"{role}": { "$exists": True }, f"{role}.{profile_id.replace('.', '\\u002e').replace('$', '\\u0024')}": { "$exists": True } })
+
+    print(role, profile_id, doc)
     if not doc:
-        raise HTTPException(status_code=404, detail="Profile not found")
-    return doc.get(role.lower() , {}).get(profile_id, [])
+       return []
+    return doc.get(role, {}).get(profile_id, [])
 
 @router.post("/transactions")
 def validate(response : QrCodeData):
 
-    # try:
-    #     requests.post(f"{BC_URI}/event", json=response.event.dict())
-    # except Exception as e:
-    #     raise HTTPException(status_code=500, detail="Blockchain interaction failed")
-    
-    data={'batch_id': response.event.batch_id,
-          'crop_id': response.event.crop_id,
+    data={'batch_id': response.batch_id,
+        #   'crop_id': doc['crop_id'],
           'start_time': response.start_time}
-    
 
-    crops_collection.update_one(
-        {},
-        {"$push": {f"{response.to_role}.{response.to_id}": data}},
-        upsert=True
-    )    
+    doc= crops_collection.find()
+    # # print(doc)
+    for d in doc:
+        
+        for item in d.get(response.from_role, {}).get(response.from_id, []):
+            # print(item)
+            # print('_'*100)
+            # print(item['batch_id'], data['batch_id'])
+            if item['batch_id']==data['batch_id']:
+                doc=item
+                print("Found:", doc)
+                break
+        else:
+            doc=None
+    if not doc:
+        raise HTTPException(status_code=404, detail="No matching batch found")
 
     crops_collection.update_one(
     {},
     {"$pull": {
         f"{response.from_role}.{response.from_id}": {
-            "batch_id": data["batch_id"],
-            "crop_id": data["crop_id"]
+            "batch_id": data["batch_id"]
         }
     }}
 )
+    data={'batch_id': response.batch_id,
+          'crop_id': doc['crop_id'],
+          'start_time': response.start_time}
+    
+    crops_collection.update_one(
+        {},
+        {"$push": {f"{response.to_role}.{response.to_id}": data}},
+        upsert=True
+    )    
     
     return {"message": "Transaction successful"}
 
