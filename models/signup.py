@@ -8,7 +8,7 @@ from typing import List, Optional, Literal
 class LatLong(BaseModel):
     lat: float
     long: float
-    address: str
+    address: Optional[str]
 
 class Farmer(BaseModel):
     role: Literal["farmer"]

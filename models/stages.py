@@ -37,7 +37,7 @@ class FarmerDetails(BaseModel):
 # a. Collection Event
 class CollectionEvent(BaseModel):
     batch_id: str
-    actor_id: str 
+    profile_id: str 
     crop_id: str   
     location: LatLong
     start_date: datetime
@@ -52,7 +52,7 @@ class TransportEvent(BaseModel):
     transport_id: str
     batch_id: str
     provenance_fhir_url: HttpUrl
-    transporter_id: str
+    profile_id: str
     origin: LatLong
     destination: LatLong
     start_time: datetime
@@ -66,7 +66,7 @@ class TransportEvent(BaseModel):
 class ProcessingEvent(BaseModel):
     processing_id: str
     batch_id: str
-    processing_company_id: str
+    profile_id: str
     company_location: LatLong
     processes_applied: List[str]
     process_conditions: Optional[EnvironmentalConditions]
@@ -90,7 +90,7 @@ class TestResults(BaseModel):
 class QualityTest(BaseModel):
     test_id: str
     batch_id: str
-    lab_id: str
+    profile_id: str
     date_of_test: datetime
     test_results: List[TestResults]
     certification_report_url: Optional[HttpUrl]
