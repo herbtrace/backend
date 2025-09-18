@@ -8,11 +8,12 @@ from typing import List, Optional, Literal
 class LatLong(BaseModel):
     lat: float
     long: float
-    address: str
+    address: Optional[str]
 
 class Farmer(BaseModel):
     role: Literal["farmer"]
-    profile_id: Optional[str]
+    profile_id: str
+    profile_name: str
     name: str
     phone_number: str
     location: Optional[LatLong]
@@ -24,6 +25,7 @@ class Farmer(BaseModel):
 class WildCollector(BaseModel):
     role: Literal["wild_collector"]
     profile_id: str
+    profile_name: str
     name: str
     phone_number: str
     location: Optional[LatLong]
@@ -36,7 +38,7 @@ class WildCollector(BaseModel):
 class Processor(BaseModel):
     role: Literal["processor"]
     profile_id: str
-    company_name: str
+    profile_name: str
     authority_name: str
     address: str
     license_no: Optional[str]
@@ -49,7 +51,7 @@ class Processor(BaseModel):
 class Laboratory(BaseModel):
     role: Literal["laboratory"]
     profile_id: str
-    company_name: str
+    profile_name: str
     location: str
     accreditation_no: Optional[str]
     test_capabilities: Optional[List[str]] = []
@@ -60,7 +62,7 @@ class Laboratory(BaseModel):
 class Manufacturer(BaseModel):
     role: Literal["manufacturer"]
     profile_id: str
-    name: str
+    profile_name: str
     address: str
     license_no: Optional[str]
     GMP_certified: Optional[bool]
@@ -70,7 +72,7 @@ class Manufacturer(BaseModel):
 class Packer(BaseModel):
     role: Literal["packer"]
     profile_id: str
-    name: str
+    profile_name: str
     lic_no: Optional[str]
     location: Optional[str]
     phone_number: str
@@ -78,6 +80,7 @@ class Packer(BaseModel):
 
 class Storage(BaseModel):
     role: Literal["storage"]
+    profile_name: str
     profile_id: str
     facility_name: str
     location: str
