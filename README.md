@@ -22,7 +22,7 @@ This backend service provides REST APIs to handle:
 
 1. Clone the repository:
 ```sh
-git clone <repository-url>
+git clone https://github.com/herbtrace/backend.git
 cd backend
 ```
 
